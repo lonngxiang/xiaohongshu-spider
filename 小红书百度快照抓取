@@ -1,0 +1,148 @@
+import requests
+from lxml import etree
+import re
+import time
+import datetime
+import pandas as pd
+import csv
+
+def down(url):
+
+    headers={
+    "Cookie":"BAIDUID=AE419F055AB6C1FC5A6C5248BD8D6D8C:FG=1; BIDUPSID=AE419F055AB6C1FC5A6C5248BD8D6D8C; PSTM=1504170124; BD_UPN=12314753; ispeed_lsm=0; __cfduid=d1664788e6df0cb131b11e40d01007db21552361638; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; delPer=0; BD_HOME=0; H_PS_PSSID=1466_21100_18559_28721_28557_28607_28584_28697_28603_28625_28605; BD_CK_SAM=1; PSINO=1; H_PS_645EC=55584mG9AOOpqnxlluUithpvHBIy76Xp4indEv3fd67PdpI7BBiLlCZgEFQ; BDSVRTM=169",
+    "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36"
+    }
+    html=requests.get(url,headers=headers).text
+    return  etree.HTML(html)
+
+
+def down1(url):
+    # headers1 = {
+    #     "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    #     "Accept-Encoding":"gzip, deflate, br",
+    #     "Accept-Language":"zh-CN,zh;q=0.9",
+    #     "Cache-Control":"max-age=0",
+    #     "Connection": "keep-alive",
+    #     "Cookie": "xhsTrackerId=8e993978-8150-4204-c245-f2417e4ce69b; xhsuid=jHNcslZpozk1QmD4; Hm_lvt_b344979f0455853bf22b3ef05fa7b4ac=1544432527; extra_exp_ids=; xhsTracker=url=/discovery/item/5c397811000000000f009c53&searchengine=baidu; Hm_lvt_d0ae755ac51e3c5ff9b1596b0c09c826=1547308270,1547308279,1547348414,1547348980; ANTI=e77b3b070e|1547350336|9f4b320d7a; beaker.session.id=3c0a891f26966b4ad5c3b01c6b74c5b7a670e68bgAJ9cQEoVQhfZXhwaXJlc3ECY2RhdGV0aW1lCmRhdGV0aW1lCnEDVQoH4wETDQonBxo4hVJxBFUDX2lkcQVVIGRhY2QzM2ViMmY2MTQyMmU4ZWJkMDRiYTZkYzk3ZGQ1cQZVDl9hY2Nlc3NlZF90aW1lcQdHQdcOq88lax5VDl9jcmVhdGlvbl90aW1lcQhHQdcOec6wKLd1Lg==; Hm_lvt_9df7d19786b04345ae62033bd17f6278=1547349835; Hm_lpvt_9df7d19786b04345ae62033bd17f6278=1547349835; Hm_lpvt_d0ae755ac51e3c5ff9b1596b0c09c826=1547349835; noteIndex=1; xhs_spses.1e22=*; xhs_spid.1e22=8cbf8b0883f59b82.1544429742.2.1547349838.1544434053.74a6b317-2213-437d-9f22-7fb9edf68bf2",
+    #     # "Cookie": "xhsTrackerId=8e993978-8150-4204-c245-f2417e4ce69b; xhsuid=jHNcslZpozk1QmD4; Hm_lvt_b344979f0455853bf22b3ef05fa7b4ac=1544432527; xhs_spses.5dde=*; Hm_lvt_9df7d19786b04345ae62033bd17f6278=1547298659,1547299711,1547300836,1547301004; Hm_lvt_d0ae755ac51e3c5ff9b1596b0c09c826=1547298659,1547299711,1547300836,1547301004; Hm_lpvt_9df7d19786b04345ae62033bd17f6278=1547302835; beaker.session.id=6c977fa61db8572aec6d70227c75d59461257160gAJ9cQEoVQhfZXhwaXJlc3ECY2RhdGV0aW1lCmRhdGV0aW1lCnEDVQoH4wETDQonBxo4hVJxBFUDX2lkcQVVIGRhY2QzM2ViMmY2MTQyMmU4ZWJkMDRiYTZkYzk3ZGQ1cQZVDl9hY2Nlc3NlZF90aW1lcQdHQdcOfexX43pVDl9jcmVhdGlvbl90aW1lcQhHQdcOec6wKLd1Lg==; Hm_lpvt_d0ae755ac51e3c5ff9b1596b0c09c826=1547302835; xhs_spid.5dde=6e70bc4555378797.1544585706.4.1547304787.1545195746.715a2b88-d73d-4a43-b9b3-a8347ced896a; xhsTracker=url=/discovery/item/5a5241fe4b88451632c9a8c6&searchengine=baidu; extra_exp_ids=; ANTI=e77b3b070e|1547306039|5b2386f725",
+    #     "Host": "m.xiaohongshu.com",
+    #     # "Referer":"https://www.xiaohongshu.com/discovery/item/5c397811000000000f009c53",
+    #     "Upgrade-Insecure-Requests": "1",
+    #     "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Mobile Safari/537.36",
+    # }
+    html = requests.get(url=url,allow_redirects=False)
+    print(html.status_code)
+    # print(html.headers["location"])
+    if html.status_code == 302:
+        new_id_url = html.headers["location"]
+        print(new_id_url)
+        print("*****")
+
+        return new_id_url
+    else:
+        print("++++++++++++++++")
+        print(url)
+        # print(requests.get(url=url,headers=headers1).text)
+        return etree.HTML(requests.get(url=url).text)
+
+
+def down2(url):
+
+    headers={
+    "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36"
+    }
+    html=requests.get(url,headers=headers)
+    html.encoding="gb2312"
+    # print(html.text)
+    return  etree.HTML(html.text)
+
+
+
+
+# url2="https://www.baidu.com/s?ie=utf-8&f=8&wd=资生堂&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1514736000%2C1517414400%7Cstftype%3D2"
+# html2=down(url2)
+# if  html2.xpath('//div[@id="page"]/a') and len(html2.xpath('//div[@id="page"]/a')) <=9:
+#     for j in range(len(html2.xpath('//div[@id="page"]/a'))):
+#
+#     pass
+
+g=[]
+# g=set()
+
+word_pd=["汉堡王 省钱","汉堡王 优惠","汉堡王 打折","汉堡王 福利","汉堡王 超值"]
+# word_pd=pd.read_csv(r"C:\Users\Lavector\Desktop\百事小红书\redbook.csv",engine='python',header=None).values.tolist()
+for l in range(len(word_pd)):
+    key_word=word_pd[l]
+    print(key_word)
+    for j in range(30):
+        print("第%d页"%(j+1))
+        try:
+            url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1535731200%2C1551369600%7Cstftype%3D2".format(key_word,j*10)  #19-2月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1548950400%2C1551369600%7Cstftype%3D2".format(key_word,j*10)  #19-2月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1546272000%2C1548950400%7Cstftype%3D2".format(key_word,j*10)  #19-1月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1543593600%2C1546272000%7Cstftype%3D2".format(key_word,j*10)  #12月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1541001600%2C1543593600%7Cstftype%3D2".format(key_word,j*10)  #11月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1538323200%2C1541001600%7Cstftype%3D2".format(key_word,j*10)  #10月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1535731200%2C1538323200%7Cstftype%3D2".format(key_word,j*10)  #9月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1533052800%2C1535731200%7Cstftype%3D2".format(key_word,j*10)  #8月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1530374400%2C1533052800%7Cstftype%3D2".format(key_word,j*10)  #7月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1527782400%2C1530374400%7Cstftype%3D2".format(key_word,j*10)  #6月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1522512000%2C1525104000%7Cstftype%3D2".format(key_word,j*10)  #4月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1519833600%2C1522512000%7Cstftype%3D2".format(key_word,j*10)  #3月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1517414400%2C1519833600%7Cstftype%3D2".format(key_word,j*10)  #2月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&pn={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1514736000%2C1517414400%7Cstftype%3D2".format(key_word,j*10)  #1月
+            # url1="https://www.baidu.com/s?ie=utf-8&f=8&wd={}&si=xiaohongshu.com&ct=2097152&gpc=stf%3D1547368671%2C1547455071%7Cstftype%3D1"
+            html1=down(url1)
+            if html1.xpath('//div[@id="page"]/strong'):
+                # for i in range(1):
+                for i in range(len(html1.xpath('//div[contains(@class,"result")]/h3/a'))):
+                    titile1=html1.xpath('//div[contains(@class,"result")][{}]/h3/a'.format(i+1))[0]
+                    titile2=titile1.xpath('string(.)')
+                    # titile=re.findall('- (.*)',titile2)[0]
+                    titile="".join(titile2)
+                    print(titile)
+                    time = html1.xpath('//div[contains(@class,"result")][{}]//div[@class="c-abstract"]/span/text()'.format(i + 1))[0].replace(" ","").replace("-","")
+                    print(time)
+                    link1=html1.xpath('//div[contains(@class,"result")][{}]/h3/a/@href'.format(i+1))[0]
+                    detil_url=down1(link1)
+                    kuaizao_url=html1.xpath('//div[@class="f13"]/a[2]/@href')[i]
+                    print(kuaizao_url)
+                    # try:
+                    kuaizao_html = down2(kuaizao_url)
+                    like = kuaizao_html.xpath('//div[@class="operation-block"]/span[1]/span/text()')[0]
+                    comment = kuaizao_html.xpath('//div[@class="operation-block"]/span[2]/span/text()')[0]
+                    star = kuaizao_html.xpath('//div[@class="operation-block"]/span[3]/span/text()')[0]
+                    # time = kuaizao_html.xpath('//div[@class="publish-date"]/span[2]/text()')[0]
+                    user = kuaizao_html.xpath('//span[@class="name-detail"]/text()')[0]
+                    # user_img = kuaizao_html.xpath('//div[@class="right-card"]//div[@class="left-img"]/img/@src')[0]
+                    # if kuaizao_html.xpath('//ul[@class="slide"]/li[1]/span/@style'):
+                    #     detil_img_url1 = kuaizao_html.xpath('//ul[@class="slide"]/li[1]/span/@style')[0]
+                    #     print(detil_img_url1)
+                    #     detil_img_url = re.findall('url\(//(.*?)\)', detil_img_url1, re.S)[0]
+                    # else:
+                    #     detil_img_url = ""
+                    content1=kuaizao_html.xpath("//div[@class='left-card']//div[@class='content']")[0]
+                    content=content1.xpath('string(.)')
+
+                    g.append([key_word,titile, user, time, content, like, comment, star, detil_url])
+                    print(key_word,titile, user, time, content, like, comment, star, detil_url)
+        except:
+            with open("汉堡王小红书折扣2.csv", "w", encoding="utf-8-sig", newline="") as f:
+                k = csv.writer(f, dialect="excel")
+                k.writerow(["关键词", "标题", "发表人", "发布时间", "内容", "加星数", "喜欢数", "评论数", "笔记链接"])
+
+                for list1 in g:
+                    k.writerow(list1)
+
+            pass
+
+
+with open("汉堡王小红书折扣1.csv", "w", encoding="utf-8-sig", newline="") as f:
+    k = csv.writer(f, dialect="excel")
+    k.writerow(["关键词", "标题", "发表人", "发布时间", "内容", "加星数", "喜欢数", "评论数","笔记链接"])
+
+    for list1 in g:
+        k.writerow(list1)
+
+
+
